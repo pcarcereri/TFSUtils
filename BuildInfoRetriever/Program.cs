@@ -70,6 +70,8 @@ namespace BuildInfoRetriever
 
                 string buildStepJson = webClient.DownloadString(buildStep.url);
 
+                logWriter.WriteLine("Build step number " + buildStep.id);
+
                 BuildStepDetails buildDetails = JsonConvert.DeserializeObject<BuildStepDetails>(buildStepJson);
 
                 foreach (string buildStepDescription in buildDetails.value)
