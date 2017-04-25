@@ -36,9 +36,9 @@ namespace EmailBuildArtifacts
             Console.WriteLine("Artifacts folder:       " + artifactsFolder);
             Console.WriteLine("Email subject:          " + emailSubject);
             Console.WriteLine("Email body:             " + emailBody);
-            
-            Uri tfsUri = new Uri(projectCollectionUri.AbsoluteUri.Replace(projectCollectionUri.Segments.Last(), string.Empty));
-            TfsConfigurationServer configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
+
+            string tfsUriFromCollectionUri = projectCollectionUri.AbsoluteUri.Replace(projectCollectionUri.Segments.Last(), string.Empty);
+            TfsConfigurationServer configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(new Uri(tfsUriFromCollectionUri));
 
             TfsTeamProjectCollection teamProjectCollection = configurationServer.GetTeamProjectCollection(projectCollectionId);
 
@@ -58,17 +58,15 @@ namespace EmailBuildArtifacts
                 return;
             }
 
-            SmtpClient smtp = new SmtpClient
+            using (SmtpClient smtpClient = new SmtpClient("yourHost", 24))
             {
-                Host = "",
-                Port = 25,
-                EnableSsl = false,
-                DeliveryMethod = SmtpDeliveryMethod.Network
-            };
-            
-            foreach (TeamFoundationIdentity tfsIdentity in tfsIdentities)
-            {
-                SendEmail(emailSubject, emailBody, artifactFiles, smtp, tfsIdentity);
+                smtpClient.EnableSsl = false;
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                foreach (TeamFoundationIdentity tfsIdentity in tfsIdentities)
+                {
+                    SendEmail(emailSubject, emailBody, artifactFiles, smtpClient, tfsIdentity);
+                }
             }
         }
 

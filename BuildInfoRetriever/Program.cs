@@ -31,8 +31,8 @@ namespace BuildInfoRetriever
             Console.WriteLine("Build URI:              " + buildUri);
             Console.WriteLine("Log path:               " + logPath);
 
-            Uri tfsUri = new Uri(projectCollectionUri.AbsoluteUri.Replace(projectCollectionUri.Segments.Last(), string.Empty));
-            TfsConfigurationServer configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(tfsUri);
+            string tfsUriFromCollectionUri = projectCollectionUri.AbsoluteUri.Replace(projectCollectionUri.Segments.Last(), string.Empty);
+            TfsConfigurationServer configurationServer = TfsConfigurationServerFactory.GetConfigurationServer(new Uri(tfsUriFromCollectionUri));
 
             TfsTeamProjectCollection teamProjectCollection = configurationServer.GetTeamProjectCollection(projectCollectionId);
 
