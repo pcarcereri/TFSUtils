@@ -24,29 +24,73 @@ namespace BuildChangesetRetriever
 
             using (Repository repository = new Repository(repositorySourceFolder))
             {
-                Commit lastCommit = repository.Commits.QueryBy(new CommitFilter()).FirstOrDefault(c => c.Sha == lastCommitid);
-                if (null == lastCommit)
+                Commit currentCommit = repository.Commits.QueryBy(new CommitFilter()).FirstOrDefault(c => c.Sha == lastCommitid);
+                if (null == currentCommit)
                 {
                     throw new ArgumentException(string.Format("Could not retrieve the commit with identifier '{0}'", lastCommitid));
                 }
 
+                LogCommit(currentCommit, "Current commit");
+
+                TreeChanges changeLog = null;
+
                 switch (operation)
                 {
                     case ChangesetOperation.DifferenceWithLastCommit:
-                        {
-                            break;
-                        }
+                        changeLog = PerformDifferenceWithLastCommit(repository, currentCommit);
+                        break;
+
                     case ChangesetOperation.DifferenceWithMaster:
-                        {
-                            break;
-                        }
+                        changeLog = PerformDifferenceWithMaster(repository, currentCommit);
+                        break;
+
                     case ChangesetOperation.DifferenceWithLastRelease:
-                        {
-                            break;
-                        }
+                        changeLog = PerformDifferenceWithLastRelease(repository, currentCommit);
+                        break;
                 }
 
+                LogChanges(changeLog);
             }
+        }
+
+        private static TreeChanges PerformDifferenceWithLastCommit(Repository repository, Commit currentCommit)
+        {
+            Commit preceedingCommit = repository.Commits.QueryBy(new CommitFilter() { SortBy = CommitSortStrategies.Reverse })
+                                                     .GetPrecedingElement<Commit>(() => currentCommit);
+
+            LogCommit(preceedingCommit, "Preceding commit");
+
+            TreeChanges changeLog = repository.Diff.Compare<TreeChanges>(preceedingCommit.Tree, DiffTargets.Index);
+
+            return changeLog;
+        }
+
+        private static TreeChanges PerformDifferenceWithMaster(Repository repository, Commit currentCommit)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static TreeChanges PerformDifferenceWithLastRelease(Repository repository, Commit currentCommit)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void LogChanges(TreeChanges changeLog)
+        {
+            string s = "";
+            Console.WriteLine("File Added: " + s.JoinWithPlaceholder(", ", "0", changeLog.Added.Select(x => x.Path).ToArray()));
+            Console.WriteLine("File Copied: " + string.Join(", ", "0", changeLog.Copied.Select(x => x.Path)));
+            Console.WriteLine("File Deleted: " + string.Join(", ", "0", changeLog.Deleted.Select(x => x.Path)));
+            Console.WriteLine("File Modified: " + string.Join(", ", "0", changeLog.Modified.Select(x => x.Path)));
+            Console.WriteLine("File Renamed: " + string.Join(", ", "0", changeLog.Renamed.Select(x => x.Path)));
+            Console.WriteLine("File Unmodified: " + string.Join(", ", "0", changeLog.Unmodified.Select(x => x.Path)));
+        }
+
+        private static void LogCommit(Commit currentCommit, string commitDescriptor)
+        {
+            Console.WriteLine(string.Concat(commitDescriptor, " id: ", currentCommit.Id));
+            Console.WriteLine(string.Concat(commitDescriptor, " author: ", currentCommit.Author));
+            Console.WriteLine(string.Concat(commitDescriptor, " message: ", currentCommit.Message));
         }
 
         private static void LogArguments(string[] args)

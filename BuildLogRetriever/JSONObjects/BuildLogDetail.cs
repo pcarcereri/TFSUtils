@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildInfoRetriever.JSONObjects
+namespace BuildInfoRetriever
 {
     /// <summary>
     /// Code generated via JSON by http://json2csharp.com/

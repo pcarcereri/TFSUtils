@@ -1,5 +1,4 @@
-﻿using BuildInfoRetriever.JSONObjects;
-using Microsoft.TeamFoundation.Build.Client;
+﻿using Microsoft.TeamFoundation.Build.Client;
 using Microsoft.TeamFoundation.Client;
 using Newtonsoft.Json;
 using System;
