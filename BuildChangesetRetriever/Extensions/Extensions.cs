@@ -40,19 +40,19 @@ namespace BuildChangesetRetriever
         /// </summary>
         /// <param name="separator"></param>
         /// <param name="placeholder"></param>
-        /// <param name="value"></param>
+        /// <param name="values"></param>
         /// <returns></returns>
-        public static String JoinWithPlaceholder(this string str, string separator, string placeholder, params String[] value)
+        public static String JoinWithPlaceholder(string separator, string placeholder, IEnumerable<string> values)
         {
-            if (value == null)
+            if (values == null)
                 throw new ArgumentNullException("value");
 
-            if(!value.Any())
+            if (!values.Any())
             {
                 return placeholder;
             }
 
-            return string.Join(separator, value);
+            return string.Join(separator, values);
         }
 
     }

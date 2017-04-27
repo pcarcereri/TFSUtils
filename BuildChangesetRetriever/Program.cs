@@ -74,16 +74,15 @@ namespace BuildChangesetRetriever
         {
             throw new NotImplementedException();
         }
-
+        
         private static void LogChanges(TreeChanges changeLog)
         {
-            string s = "";
-            Console.WriteLine("File Added: " + s.JoinWithPlaceholder(", ", "0", changeLog.Added.Select(x => x.Path).ToArray()));
-            Console.WriteLine("File Copied: " + string.Join(", ", "0", changeLog.Copied.Select(x => x.Path)));
-            Console.WriteLine("File Deleted: " + string.Join(", ", "0", changeLog.Deleted.Select(x => x.Path)));
-            Console.WriteLine("File Modified: " + string.Join(", ", "0", changeLog.Modified.Select(x => x.Path)));
-            Console.WriteLine("File Renamed: " + string.Join(", ", "0", changeLog.Renamed.Select(x => x.Path)));
-            Console.WriteLine("File Unmodified: " + string.Join(", ", "0", changeLog.Unmodified.Select(x => x.Path)));
+            Console.WriteLine("File Added: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Added.Select(x => x.Path)));
+            Console.WriteLine("File Copied: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Copied.Select(x => x.Path)));
+            Console.WriteLine("File Deleted: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Deleted.Select(x => x.Path)));
+            Console.WriteLine("File Modified: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Modified.Select(x => x.Path)));
+            Console.WriteLine("File Renamed: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Renamed.Select(x => x.Path)));
+            Console.WriteLine("File Unmodified: " + Extensions.JoinWithPlaceholder(", ", "0", changeLog.Unmodified.Select(x => x.Path)));
         }
 
         private static void LogCommit(Commit currentCommit, string commitDescriptor)
